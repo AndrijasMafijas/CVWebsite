@@ -25,7 +25,8 @@ const Skills = () => (
           ))}
         </ul>
       </div>
-      <div className="skills-grid">
+  <h3 style={{ margin: '0.25rem 0 0.5rem' }}>All Skills</h3>
+  <div className="skills-grid">
         {skillGroups.map((group) => (
           <div key={group.category} className="card">
             <h3 style={{ marginTop: 0 }}>{group.category}</h3>
