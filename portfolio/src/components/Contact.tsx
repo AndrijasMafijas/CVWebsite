@@ -67,9 +67,7 @@ const Contact = () => {
         </form>
         {status === 'success' && <p className="muted" role="status">Thanks! Your message has been sent.</p>}
         {status === 'error' && <p className="muted" role="alert">{error}</p>}
-        {!formspreeEndpoint && (
-          <p className="muted">Tip: Set VITE_FORMSPREE_ENDPOINT in .env to enable direct delivery. Falling back to mailto.</p>
-        )}
+        
         
       </div>
     </section>
