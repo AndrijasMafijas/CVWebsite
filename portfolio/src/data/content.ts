@@ -95,7 +95,7 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Julia', level: 25 },
       { name: 'Assembly', level: 30 },
       { name: 'VHDL', level: 20 },
-      { name: 'MATLAB', level: 40 },
+  { name: 'matlab', level: 40 },
     ],
   },
   {

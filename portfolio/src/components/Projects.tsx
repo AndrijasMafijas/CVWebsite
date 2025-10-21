@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { projects, links } from '../data/content'
 
 const assetUrl = (src?: string) => {
@@ -38,75 +39,118 @@ const iconForTech = (label: string) => {
   return svg('M12 2a10 10 0 100 20 10 10 0 000-20z')
 }
 
-const Projects = () => (
-  <section id="projects" className="section">
-    <div className="container">
-      <h2>Projects</h2>
-      <div className="projects-list">
-        {projects.map((p) => (
-          <article key={p.name} className={`card project-item${p.featured ? ' featured' : ''}`}>
-            <header>
-              <h3 style={{ marginTop: 0 }}>{p.name}</h3>
-            </header>
-            {p.description && <p>{p.description}</p>}
-            {p.highlights?.length ? (
-              <ul className="skill-list" style={{ marginTop: '0.5rem' }}>
-                {p.highlights.map((h) => (
-                  <li key={h} className="muted">• {h}</li>
-                ))}
-              </ul>
-            ) : null}
+const Projects = () => {
+  const [lightbox, setLightbox] = useState<null | { items: { src: string; caption: string }[]; index: number; project: string }>(null)
 
-            {p.videoUrl && (
-              <div className="video-wrap">
-                <video controls muted preload="metadata" poster={assetUrl(p.images?.[0])} className={p.featured ? 'featured-video' : undefined}>
-                  <source src={assetUrl(p.videoUrl)} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <div className="card-actions"><a className="btn outline" href={assetUrl(p.videoUrl)} target="_blank" rel="noreferrer">Open video</a></div>
+  const close = () => setLightbox(null)
+  const prev = () => setLightbox((lb) => (lb ? { ...lb, index: (lb.index - 1 + lb.items.length) % lb.items.length } : lb))
+  const next = () => setLightbox((lb) => (lb ? { ...lb, index: (lb.index + 1) % lb.items.length } : lb))
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!lightbox) return
+      if (e.key === 'Escape') close()
+      if (e.key === 'ArrowLeft') prev()
+      if (e.key === 'ArrowRight') next()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox])
+
+  return (
+    <section id="projects" className="section">
+      <div className="container">
+        <h2>Projects</h2>
+        <div className="projects-list">
+          {projects.map((p) => (
+            <article key={p.name} className={`card project-item${p.featured ? ' featured' : ''}`}>
+              <header>
+                <h3 style={{ marginTop: 0 }}>{p.name}</h3>
+              </header>
+              {p.description && <p>{p.description}</p>}
+              {p.highlights?.length ? (
+                <ul className="skill-list" style={{ marginTop: '0.5rem' }}>
+                  {p.highlights.map((h) => (
+                    <li key={h} className="muted">• {h}</li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {p.videoUrl && (
+                <div className="video-wrap">
+                  <video controls muted preload="metadata" poster={assetUrl(p.images?.[0])} className={p.featured ? 'featured-video' : undefined}>
+                    <source src={assetUrl(p.videoUrl)} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <div className="card-actions"><a className="btn outline" href={assetUrl(p.videoUrl)} target="_blank" rel="noreferrer">Open video</a></div>
+                </div>
+              )}
+
+              {p.images?.length ? (
+                <div className="gallery-row" role="group" aria-label={`${p.name} screenshots`}>
+                  {p.images.map((src, idx) => (
+                    <figure key={src} className="shot">
+                      <button
+                        className="image-button"
+                        onClick={() => setLightbox({
+                          items: p.images!.map((img) => ({ src: assetUrl(img), caption: captionFromPath(img) })),
+                          index: idx,
+                          project: p.name,
+                        })}
+                        aria-label={`Open image: ${captionFromPath(src)}`}
+                      >
+                        <img src={assetUrl(src)} alt={`${p.name} — ${captionFromPath(src)}`} />
+                      </button>
+                      <figcaption className="muted">{captionFromPath(src)}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              ) : null}
+
+              {p.tags?.length ? (
+                <ul className="skills" aria-label="Technologies" style={{ marginTop: '0.25rem' }}>
+                  {p.tags.map((t) => (
+                    <li key={t} className="badge">
+                      <span className="tech-icon" aria-hidden="true">{iconForTech(t)}</span>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {(p.demoUrl || p.codeUrl || p.installerUrl) && (
+                <div className="card-actions">
+                  {p.demoUrl && <a className="btn" href={p.demoUrl} target="_blank" rel="noreferrer">Live Demo</a>}
+                  {p.codeUrl && <a className="btn outline" href={p.codeUrl} target="_blank" rel="noreferrer">Source</a>}
+                  {p.installerUrl && <a className="btn" href={p.installerUrl} target="_blank" rel="noreferrer">Download</a>}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+        <p className="muted" style={{ marginTop: '0.75rem' }}>
+          For more projects, visit my GitHub profile:
+          {' '}<a href={links.github} target="_blank" rel="noreferrer">{links.github}</a>
+        </p>
+
+        {lightbox && (
+          <div className="lightbox-backdrop" role="dialog" aria-modal="true" onClick={(e) => { if (e.target === e.currentTarget) close() }}>
+            <div className="lightbox">
+              <button className="lightbox-close" aria-label="Close" onClick={close}>×</button>
+              <div className="lightbox-head">
+                <h4>{lightbox.items[lightbox.index].caption}</h4>
               </div>
-            )}
-
-            {p.images?.length ? (
-              <div className="gallery-row" role="group" aria-label={`${p.name} screenshots`}>
-                {p.images.map((src) => (
-                  <figure key={src} className="shot">
-                    <a href={assetUrl(src)} target="_blank" rel="noreferrer">
-                      <img src={assetUrl(src)} alt={`${p.name} — ${captionFromPath(src)}`} />
-                    </a>
-                    <figcaption className="muted">{captionFromPath(src)}</figcaption>
-                  </figure>
-                ))}
+              <div className="lightbox-body">
+                <button className="lightbox-nav left" onClick={prev} aria-label="Previous">‹</button>
+                <img src={lightbox.items[lightbox.index].src} alt={`${lightbox.project} — ${lightbox.items[lightbox.index].caption}`} />
+                <button className="lightbox-nav right" onClick={next} aria-label="Next">›</button>
               </div>
-            ) : null}
-
-            {p.tags?.length ? (
-              <ul className="skills" aria-label="Technologies" style={{ marginTop: '0.25rem' }}>
-                {p.tags.map((t) => (
-                  <li key={t} className="badge">
-                    <span className="tech-icon" aria-hidden="true">{iconForTech(t)}</span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-
-            {(p.demoUrl || p.codeUrl || p.installerUrl) && (
-              <div className="card-actions">
-                {p.demoUrl && <a className="btn" href={p.demoUrl} target="_blank" rel="noreferrer">Live Demo</a>}
-                {p.codeUrl && <a className="btn outline" href={p.codeUrl} target="_blank" rel="noreferrer">Source</a>}
-                {p.installerUrl && <a className="btn" href={p.installerUrl} target="_blank" rel="noreferrer">Download</a>}
-              </div>
-            )}
-          </article>
-        ))}
+            </div>
+          </div>
+        )}
       </div>
-      <p className="muted" style={{ marginTop: '0.75rem' }}>
-        For more projects, visit my GitHub profile:
-        {' '}<a href={links.github} target="_blank" rel="noreferrer">{links.github}</a>
-      </p>
-    </div>
-  </section>
-)
+    </section>
+  )
+}
 
 export default Projects
