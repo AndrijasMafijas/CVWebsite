@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { contact } from '../data/content'
 
-const formspreeEndpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined
+const formspreeEndpoint = (import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined) || 'https://formspree.io/f/xjkadvwd'
 
 const Contact = () => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -9,10 +8,7 @@ const Contact = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!formspreeEndpoint) {
-      window.location.href = `mailto:${contact.email}`
-      return
-    }
+    // Endpoint ensured via env or default; proceed with direct POST
     const form = e.currentTarget
     const data = new FormData(form)
     // Honeypot
