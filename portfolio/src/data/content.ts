@@ -133,7 +133,7 @@ export const projects: ProjectItem[] = [
     name: 'UE5 Horror Game — Awaken',
     description:
       'Psychological horror game built in Unreal Engine 5.4.4 over ~2 months. Single-player, Blueprint scripting, Windows installer.',
-    codeUrl: 'https://github.com/AndrijasMafijas/Awaken',
+    codeUrl: 'https://github.com/AndrijaExe/Awaken',
     installerUrl: 'https://www.dropbox.com/scl/fi/epqmidlwps1pcyipv769i/Awaken-Final-Version-Installer.exe?rlkey=4f50xfbu0ppnhsz1rjkequucz&st=l7gys8nv&dl=0',
     images: [
       '/awaken/AI that is chasing you.png',
@@ -151,7 +151,7 @@ export const projects: ProjectItem[] = [
     name: 'MovieVerse — Full‑Stack web app',
     description:
       'A full‑stack web application for browsing a catalog of movies and series with user accounts, ratings, and trivia. The project is split into a frontend (React + Vite + TailwindCSS) and a backend (Express + TypeScript + MySQL) with JWT authentication.',
-    codeUrl: 'https://github.com/AndrijasMafijas/MovieVerse',
+    codeUrl: 'https://github.com/AndrijaExe/MovieVerse',
     images: [
       '/movieverse/PocetnaStranica.png',
       '/movieverse/KatalogFilmova.png',
@@ -185,6 +185,6 @@ export const extras = [
 ]
 
 export const links = {
-  github: 'https://github.com/AndrijasMafijas',
+  github: 'https://github.com/AndrijaExe',
   linkedin: 'https://www.linkedin.com/in/andrijastanisic/',
 }

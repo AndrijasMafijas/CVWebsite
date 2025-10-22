@@ -4,6 +4,6 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // GitHub Pages under https://andrijasmafijas.github.io/CVWebsite/
+  // GitHub Pages under https://andrijaexe.github.io/CVWebsite/
   base: '/CVWebsite/',
 })
